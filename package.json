@@ -5,14 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "echo \"Start a web service with 'npm run web' and a sync worker with 'npm run worker'.\" && exit 0",
+    "web": "node web.js",
+    "worker": "node worker.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "jade": "^1.11.0",
     "nylas": "^3.0.0",
+    "redis": "^2.6.2",
     "request": "^2.74.0",
     "sequelize": "^3.24.3",
     "sqlite3": "^3.1.6"

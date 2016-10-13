@@ -1,27 +1,30 @@
-// Initialize the database and create the models we'll use for the example
+// Initialize the database and create the models we'll use for the example.
+const Sequelize = require('sequelize');
 const db = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
   storage: './database.sqlite',
+  logging: false,
 });
 
 const User = db.define('User', {
+  emailAddress: { type: Sequelize.STRING },
   nylasAccountId: { type: Sequelize.STRING },
   nylasAccountToken: { type: Sequelize.STRING },
 });
 
-const WatchedThread = db.define('WatchedThread', {
-  nylasAccountId: { type: Sequelize.STRING, unique: 'idxAccountThread'},
-  nylasThreadId: { type: Sequelize.STRING, unique: 'idxAccountThread'},
+const EmailMessage = db.define('EmailMessage', {
+  subject: { type: Sequelize.STRING },
+  threadId: { type: Sequelize.STRING },
+  body: { type: Sequelize.TEXT },
 });
 
-WatchedThread.belongsTo(User);
-User.hasMany(WatchedThread);
+EmailMessage.belongsTo(User);
+User.hasMany(EmailMessage);
 
-// Create tables if they don't exist yet. Note: this is async.
 db.sync();
 
 module.exports = {
   db,
-  WatchedThread,
   User,
+  EmailMessage,
 }

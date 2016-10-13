@@ -1,5 +1,8 @@
-const {WatchedThread} = require('../src/models');
-const ReplyProcessor = require('../src/reply-processor');
+const crypto = require('crypto');
+
+const {EmailMessage, User} = require('../src/models');
+const {FETCH_WEBHOOK_MESSAGE_QUEUE} = require('../src/constants');
+const QueueConnector = require('../src/queue-connector');
 
 /*
 Nylas Webhook Data Format:
@@ -40,51 +43,37 @@ module.exports = function(app) {
   // endpoint to the developer dashboard.  All you have to do is return the
   // value of the challenge parameter in the body of the response.
   app.get('/webhook', function(req, res) {
+    console.log(`WEBHOOK: Responding to webhook challenge.`)
     return res.status(200).send(req.query.challenge);
   });
 
   app.post('/webhook', function(req, res) {
+    console.log(`WEBHOOK: Received webhook.`)
+
     if (!verifyNylasSignature(req)) {
-      console.log("Failed to verify X-Nylas-Signature");
+      console.error("Failed to verify X-Nylas-Signature");
       return res.status(401).send("X-Nylas-Signature failed verification 🚷 ");
     }
 
-    const recentMailThreshold = Date.now() / 1000 - 60 * 60; // last hour
-
     for (const delta of req.body.deltas) {
-      if (delta.type !== 'message.created') {
-        continue;
-      }
+      if (delta.type === 'message.created') {
+        const {id, account_id} = delta.object_data;
 
-      const {id, account_id} = delta.object_data;
-      const {received_date, thread_id} = delta.object_data.attributes;
-      const isRecentMail = received_date > recentMailThreshold;
+        User.find({where: {nylasAccountId: account_id}}).then((user) => {
+          if (!user) {
+            console.error(`WEBHOOK: Ignoring webhook for message in account id ${account_id}, which is not a User.`)
+            return;
+          }
 
-      if (!isRecentMail) {
-        // Nylas may be sending us a webhook about a message that it's synced from
-        // the user's mailbox, which is not a new message. We don't care about these.
-        continue;
-      }
-
-      // is this a new message on a thread we're watching? Look it up and see.
-      WatchedThread.findOne({
-        where: {
-          nylasThreadId: thread_id,
-          nylasAccountId: account_id,
-        },
-      }).then(function(watching) {
-        if (!watching) {
-          return;
-        }
-
-        // We've got a reply on a thread we're watching! Hand it off to the
-        // reply processor to queue it / apply our business logic.
-        ReplyProcessor.handleReply({
-          account_id: account_id,
-          thread_id: thread_id,
-          message_id: id,
+          // We've got a reply on a thread we're watching! Hand it off to the
+          // reply processor to queue it / apply our business logic.
+          console.log(`WEBHOOK: Queueing fetch for message: ${id}`);
+          QueueConnector.send(FETCH_WEBHOOK_MESSAGE_QUEUE, {
+            messageId: id,
+            token: user.nylasAccountToken,
+          });
         });
-      });
+      }
     }
 
     return res.status(200);
