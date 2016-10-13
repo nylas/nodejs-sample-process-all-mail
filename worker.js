@@ -66,7 +66,7 @@ function consumeFetchMessagesJob({page, token, userId}, callback) {
     console.log('PROCESSOR: Could not fetch page of messages! Error: ' + err.toString());
     if (shouldRetryAfterError(err)) {
       console.log('PROCESSOR: Queueing retry...');
-      QueueConnector.send(FETCH_MESSAGES_QUEUE, {userId, page, token});
+      QueueConnector.send(FETCH_MESSAGES_QUEUE, {page, token, userId});
     }
     callback();
   });
@@ -85,7 +85,7 @@ function consumeFetchWebhookMessageJob({messageId, token, userId}, callback) {
     console.log('PROCESSOR: Could not fetch message! Error: ' + err.toString());
     if (shouldRetryAfterError(err)) {
       console.log('PROCESSOR: Queueing retry...');
-      QueueConnector.send(FETCH_WEBHOOK_MESSAGE_QUEUE, {messageId, token});
+      QueueConnector.send(FETCH_WEBHOOK_MESSAGE_QUEUE, {messageId, token, userId});
     }
     callback();
   });
