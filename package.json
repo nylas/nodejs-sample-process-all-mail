@@ -1,0 +1,20 @@
+{
+  "name": "sample-webhook-consumer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "nylas": "^3.0.0",
+    "request": "^2.74.0",
+    "sequelize": "^3.24.3",
+    "sqlite3": "^3.1.6"
+  }
+}
