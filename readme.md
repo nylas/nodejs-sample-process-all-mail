@@ -13,8 +13,8 @@ message in the email account is seen and processed.
 This example also demonstrates how to use Redis to queue work, rather than processing
 it on the fly as it is received. The fetching and processing of mail is separated
 from the web service which responds to webhooks, so the two can be scaled separately.
-In production, you might consider using the number of items in the Redis queue
-to scale the number of workers used in your system.
+In production, you might consider using another queue service, like [Amazon SQS](https://aws.amazon.com/sqs/), and 
+using the number of items in the queue as a scaling trigger for the worker pool.
 
 # Dependencies
 
@@ -25,12 +25,12 @@ to send a webhook. To make testing easy, this example uses [ngrok](https://ngrok
 
 ## NodeJS / NPM
 
-Make sure `node` and `npm` are installed. **This example requires Node 4.0 or greater.**
+Make sure `node` and `npm` are installed. **This example requires Node 4.0 or greater and uses [ES2016 JavaScript syntax](https://babeljs.io/docs/learn-es2015/).**
 
 ## Redis
 
-This example uses Redis as a simple queue service. In production, you might consider
-using ActiveMQ or Amazon Simple Queue Service (SQS). To install redis on Mac OS X,
+This example uses [Redis](http://redis.io/) as a simple queue service. In production, you might consider
+using ActiveMQ or [Amazon Simple Queue Service]((https://aws.amazon.com/sqs/)) (SQS). To install redis on Mac OS X,
 run `brew install redis`.
 
 # Getting Started
