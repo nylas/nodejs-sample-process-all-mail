@@ -7,8 +7,8 @@ const Nylas = require('nylas').config({
   appSecret: process.env.NYLAS_APP_SECRET,
 });
 
-module.exports = function(app) {
-  app.get('/', function(req, res, next) {
+module.exports = (app) => {
+  app.get('/', (req, res, next) => {
     res.render('index', {
       title: 'Welcome',
       message: 'Link your email to get started.',
@@ -19,9 +19,9 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/oauth/callback', function (req, res, next) {
+  app.get('/oauth/callback', (req, res, next) => {
     if (req.query.code) {
-      Nylas.exchangeCodeForToken(req.query.code).then(function(token) {
+      Nylas.exchangeCodeForToken(req.query.code).then((token) => {
         if (!token) {
           res.render('error', {
             message: 'This code has already been used. Please try again.',
@@ -30,7 +30,7 @@ module.exports = function(app) {
           return;
         }
 
-        Nylas.with(token).account.get().then(function(account) {
+        Nylas.with(token).account.get().then((account) => {
           // create the user account
           User.create({
             emailAddress: account.emailAddress,

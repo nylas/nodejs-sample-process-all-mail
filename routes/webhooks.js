@@ -36,18 +36,18 @@ function verifyNylasSignature(req) {
   return (digest === req.get('x-nylas-signature'));
 }
 
-module.exports = function(app) {
+module.exports = (app) => {
 
   // Nylas will check to make sure your webhook is valid by making a GET
   // request to your endpoint with a challenge parameter when you add the
   // endpoint to the developer dashboard.  All you have to do is return the
   // value of the challenge parameter in the body of the response.
-  app.get('/webhook', function(req, res) {
+  app.get('/webhook', (req, res) => {
     console.log(`WEBHOOK: Responding to webhook challenge.`)
     return res.status(200).send(req.query.challenge);
   });
 
-  app.post('/webhook', function(req, res) {
+  app.post('/webhook', (req, res) => {
     console.log(`WEBHOOK: Received webhook.`)
 
     if (!verifyNylasSignature(req)) {

@@ -16,12 +16,12 @@ const app = express();
 
 // Custom middleware that keeps the raw request body. This is necessary to checksum
 // the data we receive in webhooks and ensure their authenticity.
-app.use(function(req, res, next) {
-    req.rawBody = '';
-    req.on('data', function(chunk) {
-        req.rawBody += chunk;
-    });
-    next();
+app.use((req, res, next) => {
+  req.rawBody = '';
+  req.on('data', (chunk) => {
+    req.rawBody += chunk;
+  });
+  next();
 });
 
 const bodyParser = require('body-parser');
@@ -46,7 +46,7 @@ global.publicURLRoot = null;
 
 QueueConnector.connect(() => {
   // Setup ngrok settings to ensure everything works locally
-  request('http://localhost:4040/api/tunnels', function (error, response, body) {
+  request('http://localhost:4040/api/tunnels', (error, response, body) => {
     if (error || response.statusCode !== 200) {
       throw "It looks like ngrok isn't running! Make sure you've started that first with 'ngrok http 1234'";
     }

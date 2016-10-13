@@ -35,7 +35,7 @@ function receivedNylasMessage(messageJSON) {
 function consumeFetchMessagesJob({page, token}, callback) {
   const pageSize = 100;
 
-  Nylas.with(token).messages.list({limit: pageSize, offset: page * pageSize}).then(function(messages) {
+  Nylas.with(token).messages.list({limit: pageSize, offset: page * pageSize}).then((messages) => {
     if (messages.length == 0) {
       return;
     }
@@ -49,7 +49,7 @@ function consumeFetchMessagesJob({page, token}, callback) {
     QueueConnector.send(FETCH_MESSAGES_QUEUE, {token: token, page: page + 1});
     callback();
 
-  }).catch(function(err) {
+  }).catch((err) => {
     console.log('PROCESSOR: Could not fetch page of messages! Error: ' + err.toString());
     if (shouldRetryAfterError(err)) {
       console.log('PROCESSOR: Queueing retry...');
@@ -60,10 +60,10 @@ function consumeFetchMessagesJob({page, token}, callback) {
 }
 
 function consumeFetchWebhookMessageJob({messageId, token}, callback) {
-  Nylas.with(token).messages.find(messageId).then(function(messageJSON) {
+  Nylas.with(token).messages.find(messageId).then((messageJSON) => {
     receivedNylasMessage(messageJSON);
     callback();
-  }).catch(function(err) {
+  }).catch((err) => {
     console.log('PROCESSOR: Could not fetch message! Error: ' + err.toString());
     if (shouldRetryAfterError(err)) {
       console.log('PROCESSOR: Queueing retry...');

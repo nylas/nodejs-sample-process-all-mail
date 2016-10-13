@@ -12,7 +12,7 @@ class QueueConnector {
   connect(callback) {
     this.client = redis.createClient();
 
-    this.client.on('error', function (err) {
+    this.client.on('error', (err) => {
       console.error("This demo requires Redis, a simple message broker. To install redis on Mac OS X, use `brew install redis`");
       console.error("After installing, run `redis-server` in another terminal and restart this demo.");
       console.error(err);
