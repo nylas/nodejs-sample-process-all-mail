@@ -39,7 +39,7 @@ module.exports = (app) => {
           }).then((user) => {
             console.log(`WEB: Created User ${user.id} (${user.emailAddress}).`);
             console.log(`WEB: Queueing a task to start syncing existing messages in account ${account.id} (${account.emailAddress}).`);
-            QueueConnector.send(FETCH_MESSAGES_QUEUE, {token: token, page: 0});
+            QueueConnector.send(FETCH_MESSAGES_QUEUE, {userId: user.id, token: token, page: 0});
             res.render('success');
           });
         });

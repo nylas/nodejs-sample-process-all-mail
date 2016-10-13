@@ -70,6 +70,7 @@ module.exports = (app) => {
           console.log(`WEBHOOK: Queueing fetch for message: ${id}`);
           QueueConnector.send(FETCH_WEBHOOK_MESSAGE_QUEUE, {
             messageId: id,
+            userId: user.id,
             token: user.nylasAccountToken,
           });
         });
