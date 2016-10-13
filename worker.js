@@ -34,8 +34,12 @@ function receivedNylasMessage(messageJSON) {
 
 function consumeFetchMessagesJob({page, token}, callback) {
   const pageSize = 100;
+  const pageParams = {
+    limit: pageSize,
+    offset: page * pageSize,
+  };
 
-  Nylas.with(token).messages.list({limit: pageSize, offset: page * pageSize}).then((messages) => {
+  Nylas.with(token).messages.list(pageParams).then((messages) => {
     if (messages.length == 0) {
       return;
     }
@@ -45,7 +49,8 @@ function consumeFetchMessagesJob({page, token}, callback) {
       receivedNylasMessage(messageJSON);
     }
 
-    // if more than 0 messages were returned, we want to queue another page fetch
+    // since messages were returned, queue another page fetch. If it comes
+    // back with zero items, we'll stop paginating.
     QueueConnector.send(FETCH_MESSAGES_QUEUE, {token: token, page: page + 1});
     callback();
 

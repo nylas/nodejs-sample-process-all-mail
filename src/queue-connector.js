@@ -45,7 +45,7 @@ class QueueConnector {
 
   send(name, data) {
     console.log(`QUEUE: Appending item to queue ${name}.`)
-    this.client.lpush(name, JSON.stringify(data));
+    this.client.rpush(name, JSON.stringify(data));
   }
 }
 
