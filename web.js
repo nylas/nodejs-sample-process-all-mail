@@ -52,17 +52,20 @@ QueueConnector.connect(() => {
     }
 
     if (!process.env.NYLAS_APP_SECRET) {
-      throw "Before running this example, edit ./config.js and add your Nylas App ID and Secret.";
+      throw "Before running this example, edit ./config.js and add your Nylas App ID and Secret. See config.js.template for an example.";
     }
 
     global.publicURLRoot = JSON.parse(body).tunnels[1].public_url
     const webhookURI = `${global.publicURLRoot}/webhook`.replace('http:', 'https:');
+    const callbackURI = `${global.publicURLRoot}/oauth/callback`.replace('http:', 'https:');
+
 
     // Start the program
     console.log(`Server running at http://${process.env.HOST}:${process.env.PORT}/`);
     console.log(`\nIf you haven't already, follow these steps:`);
     console.log(` - Visit https://developer.nylas.com and create a 'message.created' webhook with the URL: ${webhookURI}`);
-    console.log(` - Start one or more sync workers by running 'npm start worker' in another console.`);
+    console.log(` - Visit https://developer.nylas.com and create a callback with this url ${callbackURI}`);
+    console.log(` - Start one or more sync workers by running 'npm run worker' in another console.`);
     console.log(` - Link an account to sync by visting http://${process.env.HOST}:${process.env.PORT}/!`);
     console.log(`\nNot receiving webhooks? Make sure it hasn't been disabled on the dashboard. If it has, delete it and create it again.`);
     app.listen(process.env.PORT);
