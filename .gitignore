@@ -2,3 +2,5 @@
 /node_modules
 /dump.rdb
 /database.sqlite
+config.js
+npm-debug.log
